@@ -1,0 +1,120 @@
+project:
+  packs:
+    - pack: ARM::CMSIS@^4.5.0
+    - pack: Keil::STM32U5xx_DFP@^3.1.0
+    - pack: ARM::CMSIS-NN@^4.0.0
+    - pack: ARM::CMSIS-DSP@^1.10.1
+  setups:
+    - setup: Options for dog
+      processor:
+        fpu: sp
+        trustzone: non-secure
+      add-path:
+        - ../Core/Inc
+        - ../Drivers/STM32U5xx_HAL_Driver/Inc
+        - ../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy
+        - ../Drivers/CMSIS/Device/ST/STM32U5xx/Include
+        - ../Drivers/CMSIS/Include
+      debug: "on"
+      define:
+        - USE_HAL_DRIVER
+        - STM32U575xx
+      misc:
+        - C:
+            - -std=c11
+          C-CPP:
+            - -fno-rtti
+            - -funsigned-char
+            - -fshort-enums
+            - -fshort-wchar
+            - -ffunction-sections
+            - -Wno-packed
+            - -Wno-missing-variable-declarations
+            - -Wno-missing-prototypes
+            - -Wno-missing-noreturn
+            - -Wno-sign-conversion
+            - -Wno-nonportable-include-path
+            - -Wno-reserved-id-macro
+            - -Wno-unused-macros
+            - -Wno-documentation-unknown-command
+            - -Wno-documentation
+            - -Wno-license-management
+            - -Wno-parentheses-equality
+          CPP:
+            - -xc++
+            - -std=c++11
+            - -fno-exceptions
+          ASM:
+            - -masm=auto
+          Link:
+            - --map
+            - --load_addr_map_info
+            - --xref
+            - --callgraph
+            - --symbols
+            - --info sizes
+            - --info totals
+            - --info unused
+            - --info veneers
+            - --strict
+            - --summary_stderr
+            - --info summarysizes
+  linker:
+    - script: dog_dog.sct
+  groups:
+    - group: Application/MDK-ARM
+      files:
+        - file: startup_stm32u575xx.s
+    - group: Application/User/Core
+      files:
+        - file: ../Core/Src/UseServo.c
+        - file: ../Core/Src/Servo.c
+        - file: ../Core/Src/main.c
+        - file: ../Core/Src/gpio.c
+        - file: ../Core/Src/icache.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/tim.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/usart.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/stm32u5xx_it.c
+        - file: ../Core/Src/stm32u5xx_hal_msp.c
+    - group: Drivers/STM32U5xx_HAL_Driver
+      files:
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_icache.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gpio.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gtzc.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c
+          misc:
+            - CPP:
+                - -xc++
+    - group: Drivers/CMSIS
+      files:
+        - file: ../Core/Src/system_stm32u5xx.c
+  components:
+    - component: ARM::CMSIS:CORE
